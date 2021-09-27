@@ -1,0 +1,345 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="stefaniniTestModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="accounts">
+          <Key>
+            <PropertyRef Name="account_number" />
+          </Key>
+          <Property Name="account_number" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="account_bank_id" Type="int" Nullable="false" />
+          <Property Name="account_client_owner_id" Type="int" Nullable="false" />
+          <Property Name="account_balance" Type="float" Nullable="false" />
+          <Property Name="account_state" Type="tinyint" Nullable="false" />
+          <Property Name="account_description" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="transactions">
+          <Key>
+            <PropertyRef Name="transaction_id" />
+          </Key>
+          <Property Name="transaction_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="transaction_date" Type="datetime" Nullable="false" />
+          <Property Name="transaction_type" Type="int" Nullable="false" />
+          <Property Name="transaction_origin_account_id" Type="int" Nullable="false" />
+          <Property Name="transaction_target_account_id" Type="int" />
+          <Property Name="transactions_description" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="transactions_type">
+          <Key>
+            <PropertyRef Name="transaction_type_id" />
+          </Key>
+          <Property Name="transaction_type_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="transaction_description" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="users">
+          <Key>
+            <PropertyRef Name="user_id" />
+          </Key>
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="user_name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="user_type" Type="tinyint" Nullable="false" />
+          <Property Name="user_pass" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="user_state" Type="tinyint" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_account_client_owner_id">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="accounts" Type="Self.accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="accounts">
+              <PropertyRef Name="account_client_owner_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_acount_bank_id">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="accounts" Type="Self.accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="accounts">
+              <PropertyRef Name="account_bank_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_transaction_target_account">
+          <End Role="accounts" Type="Self.accounts" Multiplicity="0..1" />
+          <End Role="transactions" Type="Self.transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="accounts">
+              <PropertyRef Name="account_number" />
+            </Principal>
+            <Dependent Role="transactions">
+              <PropertyRef Name="transaction_target_account_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_transactions_origin_accounts_id">
+          <End Role="accounts" Type="Self.accounts" Multiplicity="1" />
+          <End Role="transactions" Type="Self.transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="accounts">
+              <PropertyRef Name="account_number" />
+            </Principal>
+            <Dependent Role="transactions">
+              <PropertyRef Name="transaction_origin_account_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_transactions_transactions_type">
+          <End Role="transactions_type" Type="Self.transactions_type" Multiplicity="1" />
+          <End Role="transactions" Type="Self.transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="transactions_type">
+              <PropertyRef Name="transaction_type_id" />
+            </Principal>
+            <Dependent Role="transactions">
+              <PropertyRef Name="transaction_type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="stefaniniTestModelStoreContainer">
+          <EntitySet Name="accounts" EntityType="Self.accounts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="transactions" EntityType="Self.transactions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="transactions_type" EntityType="Self.transactions_type" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="users" EntityType="Self.users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_account_client_owner_id" Association="Self.FK_account_client_owner_id">
+            <End Role="users" EntitySet="users" />
+            <End Role="accounts" EntitySet="accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_acount_bank_id" Association="Self.FK_acount_bank_id">
+            <End Role="users" EntitySet="users" />
+            <End Role="accounts" EntitySet="accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_transaction_target_account" Association="Self.FK_transaction_target_account">
+            <End Role="accounts" EntitySet="accounts" />
+            <End Role="transactions" EntitySet="transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_transactions_origin_accounts_id" Association="Self.FK_transactions_origin_accounts_id">
+            <End Role="accounts" EntitySet="accounts" />
+            <End Role="transactions" EntitySet="transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_transactions_transactions_type" Association="Self.FK_transactions_transactions_type">
+            <End Role="transactions_type" EntitySet="transactions_type" />
+            <End Role="transactions" EntitySet="transactions" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="stefaniniTestModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="accounts">
+          <Key>
+            <PropertyRef Name="account_number" />
+          </Key>
+          <Property Name="account_number" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="account_bank_id" Type="Int32" Nullable="false" />
+          <Property Name="account_client_owner_id" Type="Int32" Nullable="false" />
+          <Property Name="account_balance" Type="Double" Nullable="false" />
+          <Property Name="account_state" Type="Byte" Nullable="false" />
+          <Property Name="account_description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="users" Relationship="Self.FK_account_client_owner_id" FromRole="accounts" ToRole="users" />
+          <NavigationProperty Name="users1" Relationship="Self.FK_acount_bank_id" FromRole="accounts" ToRole="users" />
+          <NavigationProperty Name="transactions" Relationship="Self.FK_transaction_target_account" FromRole="accounts" ToRole="transactions" />
+          <NavigationProperty Name="transactions1" Relationship="Self.FK_transactions_origin_accounts_id" FromRole="accounts" ToRole="transactions" />
+        </EntityType>
+        <EntityType Name="transactions">
+          <Key>
+            <PropertyRef Name="transaction_id" />
+          </Key>
+          <Property Name="transaction_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="transaction_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="transaction_type" Type="Int32" Nullable="false" />
+          <Property Name="transaction_origin_account_id" Type="Int32" Nullable="false" />
+          <Property Name="transaction_target_account_id" Type="Int32" />
+          <Property Name="transactions_description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="accounts" Relationship="Self.FK_transaction_target_account" FromRole="transactions" ToRole="accounts" />
+          <NavigationProperty Name="accounts1" Relationship="Self.FK_transactions_origin_accounts_id" FromRole="transactions" ToRole="accounts" />
+          <NavigationProperty Name="transactions_type" Relationship="Self.FK_transactions_transactions_type" FromRole="transactions" ToRole="transactions_type" />
+        </EntityType>
+        <EntityType Name="transactions_type">
+          <Key>
+            <PropertyRef Name="transaction_type_id" />
+          </Key>
+          <Property Name="transaction_type_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="transaction_description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="transactions" Relationship="Self.FK_transactions_transactions_type" FromRole="transactions_type" ToRole="transactions" />
+        </EntityType>
+        <EntityType Name="users">
+          <Key>
+            <PropertyRef Name="user_id" />
+          </Key>
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <Property Name="user_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="user_type" Type="Byte" Nullable="false" />
+          <Property Name="user_pass" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="user_state" Type="Byte" Nullable="false" />
+          <NavigationProperty Name="accounts" Relationship="Self.FK_account_client_owner_id" FromRole="users" ToRole="accounts" />
+          <NavigationProperty Name="accounts1" Relationship="Self.FK_acount_bank_id" FromRole="users" ToRole="accounts" />
+        </EntityType>
+        <Association Name="FK_account_client_owner_id">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="accounts" Type="Self.accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="accounts">
+              <PropertyRef Name="account_client_owner_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_acount_bank_id">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="accounts" Type="Self.accounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="accounts">
+              <PropertyRef Name="account_bank_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_transaction_target_account">
+          <End Role="accounts" Type="Self.accounts" Multiplicity="0..1" />
+          <End Role="transactions" Type="Self.transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="accounts">
+              <PropertyRef Name="account_number" />
+            </Principal>
+            <Dependent Role="transactions">
+              <PropertyRef Name="transaction_target_account_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_transactions_origin_accounts_id">
+          <End Role="accounts" Type="Self.accounts" Multiplicity="1" />
+          <End Role="transactions" Type="Self.transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="accounts">
+              <PropertyRef Name="account_number" />
+            </Principal>
+            <Dependent Role="transactions">
+              <PropertyRef Name="transaction_origin_account_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_transactions_transactions_type">
+          <End Role="transactions_type" Type="Self.transactions_type" Multiplicity="1" />
+          <End Role="transactions" Type="Self.transactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="transactions_type">
+              <PropertyRef Name="transaction_type_id" />
+            </Principal>
+            <Dependent Role="transactions">
+              <PropertyRef Name="transaction_type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="stefaniniTestEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="accounts" EntityType="Self.accounts" />
+          <EntitySet Name="transactions" EntityType="Self.transactions" />
+          <EntitySet Name="transactions_type" EntityType="Self.transactions_type" />
+          <EntitySet Name="users" EntityType="Self.users" />
+          <AssociationSet Name="FK_account_client_owner_id" Association="Self.FK_account_client_owner_id">
+            <End Role="users" EntitySet="users" />
+            <End Role="accounts" EntitySet="accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_acount_bank_id" Association="Self.FK_acount_bank_id">
+            <End Role="users" EntitySet="users" />
+            <End Role="accounts" EntitySet="accounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_transaction_target_account" Association="Self.FK_transaction_target_account">
+            <End Role="accounts" EntitySet="accounts" />
+            <End Role="transactions" EntitySet="transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_transactions_origin_accounts_id" Association="Self.FK_transactions_origin_accounts_id">
+            <End Role="accounts" EntitySet="accounts" />
+            <End Role="transactions" EntitySet="transactions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_transactions_transactions_type" Association="Self.FK_transactions_transactions_type">
+            <End Role="transactions_type" EntitySet="transactions_type" />
+            <End Role="transactions" EntitySet="transactions" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="stefaniniTestModelStoreContainer" CdmEntityContainer="stefaniniTestEntities">
+          <EntitySetMapping Name="accounts">
+            <EntityTypeMapping TypeName="stefaniniTestModel.accounts">
+              <MappingFragment StoreEntitySet="accounts">
+                <ScalarProperty Name="account_number" ColumnName="account_number" />
+                <ScalarProperty Name="account_bank_id" ColumnName="account_bank_id" />
+                <ScalarProperty Name="account_client_owner_id" ColumnName="account_client_owner_id" />
+                <ScalarProperty Name="account_balance" ColumnName="account_balance" />
+                <ScalarProperty Name="account_state" ColumnName="account_state" />
+                <ScalarProperty Name="account_description" ColumnName="account_description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="transactions">
+            <EntityTypeMapping TypeName="stefaniniTestModel.transactions">
+              <MappingFragment StoreEntitySet="transactions">
+                <ScalarProperty Name="transaction_id" ColumnName="transaction_id" />
+                <ScalarProperty Name="transaction_date" ColumnName="transaction_date" />
+                <ScalarProperty Name="transaction_type" ColumnName="transaction_type" />
+                <ScalarProperty Name="transaction_origin_account_id" ColumnName="transaction_origin_account_id" />
+                <ScalarProperty Name="transaction_target_account_id" ColumnName="transaction_target_account_id" />
+                <ScalarProperty Name="transactions_description" ColumnName="transactions_description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="transactions_type">
+            <EntityTypeMapping TypeName="stefaniniTestModel.transactions_type">
+              <MappingFragment StoreEntitySet="transactions_type">
+                <ScalarProperty Name="transaction_type_id" ColumnName="transaction_type_id" />
+                <ScalarProperty Name="transaction_description" ColumnName="transaction_description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="stefaniniTestModel.users">
+              <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="user_name" ColumnName="user_name" />
+                <ScalarProperty Name="user_type" ColumnName="user_type" />
+                <ScalarProperty Name="user_pass" ColumnName="user_pass" />
+                <ScalarProperty Name="user_state" ColumnName="user_state" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

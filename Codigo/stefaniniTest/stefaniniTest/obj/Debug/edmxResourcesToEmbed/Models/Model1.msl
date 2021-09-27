@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="stefaniniTestModelStoreContainer" CdmEntityContainer="stefaniniTestEntities">
+    <EntitySetMapping Name="accounts">
+      <EntityTypeMapping TypeName="stefaniniTestModel.accounts">
+        <MappingFragment StoreEntitySet="accounts">
+          <ScalarProperty Name="account_number" ColumnName="account_number" />
+          <ScalarProperty Name="account_bank_id" ColumnName="account_bank_id" />
+          <ScalarProperty Name="account_client_owner_id" ColumnName="account_client_owner_id" />
+          <ScalarProperty Name="account_balance" ColumnName="account_balance" />
+          <ScalarProperty Name="account_state" ColumnName="account_state" />
+          <ScalarProperty Name="account_description" ColumnName="account_description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="transactions">
+      <EntityTypeMapping TypeName="stefaniniTestModel.transactions">
+        <MappingFragment StoreEntitySet="transactions">
+          <ScalarProperty Name="transaction_id" ColumnName="transaction_id" />
+          <ScalarProperty Name="transaction_date" ColumnName="transaction_date" />
+          <ScalarProperty Name="transaction_type" ColumnName="transaction_type" />
+          <ScalarProperty Name="transaction_origin_account_id" ColumnName="transaction_origin_account_id" />
+          <ScalarProperty Name="transaction_target_account_id" ColumnName="transaction_target_account_id" />
+          <ScalarProperty Name="transactions_description" ColumnName="transactions_description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="transactions_type">
+      <EntityTypeMapping TypeName="stefaniniTestModel.transactions_type">
+        <MappingFragment StoreEntitySet="transactions_type">
+          <ScalarProperty Name="transaction_type_id" ColumnName="transaction_type_id" />
+          <ScalarProperty Name="transaction_description" ColumnName="transaction_description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="users">
+      <EntityTypeMapping TypeName="stefaniniTestModel.users">
+        <MappingFragment StoreEntitySet="users">
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+          <ScalarProperty Name="user_name" ColumnName="user_name" />
+          <ScalarProperty Name="user_type" ColumnName="user_type" />
+          <ScalarProperty Name="user_pass" ColumnName="user_pass" />
+          <ScalarProperty Name="user_state" ColumnName="user_state" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

@@ -13,5 +13,7 @@ namespace stefaniniTest.ViewModels
 
         [Display(Name = "Descripcion de cuenta y banco")]
         public string account_all_detail{ get; set; }
+
+        public Double blance { get; set; }
     }
 }

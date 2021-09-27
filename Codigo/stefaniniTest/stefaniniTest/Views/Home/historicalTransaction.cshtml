@@ -1,0 +1,55 @@
+﻿
+@{
+    ViewBag.Title = "historicalTransaction";
+    var historilcalTransactionList = ViewBag.userAccountList;
+
+}
+
+
+@model stefaniniTest.ViewModels.AccountsViewModel
+
+@{
+    var userCounts = ViewBag.userAccountList;
+    ViewBag.Title = "historicalTransaction";
+}
+
+<h2>historicalTransaction</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#Numero de transaccion</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Cuenta de origen</th>
+            <th scope="col">Cuenta destino</th>
+            <th scope="col">Descripcion</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var transaction in historilcalTransactionList)
+        {
+        <tr>
+            <th scope="row">@transaction.transaction_id</th>
+            <td>@transaction.transaction_date</td>
+            <td>@transaction.transaction_type</td>
+            <td>@transaction.origin_account_id</td>
+            @if (@transaction.target_account_id == null)
+            {
+                <td>No aplica</td>
+            }
+            else
+            {
+                <td>@transaction.target_account_id</td>
+            }
+            <td>@transaction.transaction_description_detailed</td>
+        </tr>
+        }
+
+
+
+    </tbody>
+</table>
+

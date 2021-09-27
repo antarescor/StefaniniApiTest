@@ -15,5 +15,8 @@ namespace stefaniniTest.ViewModels
         [Display(Name = "Nombre  de usuario")]
         public string nombre { get; set; }
 
+        [Display(Name = "Nombre  de usuario")]
+        public int user_type { get; set; }
+
     }
 }

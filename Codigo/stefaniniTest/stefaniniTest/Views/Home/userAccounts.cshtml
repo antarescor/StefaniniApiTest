@@ -1,0 +1,34 @@
+﻿@model stefaniniTest.ViewModels.AccountsViewModel
+
+@{
+    var userCounts = ViewBag.userAccountList;
+    ViewBag.Title = "userAccounts";
+}
+
+<h2>userAccounts</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#Numero de cuenta</th>
+            <th scope="col">Descripcion</th>
+            <th scope="col">Balance</th>
+            <th scope="col">link</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var account in userCounts)
+        {
+            <tr>
+                <th scope="row">@account.account_number</th>
+                <td>@account.account_all_detail</td>
+                <td>@account.blance</td>
+                <td><p>@Html.ActionLink("Ver historial de cuenta", "historicalTransaction", new { account_id = account.account_number })</p></td>
+            </tr>
+        }
+
+
+
+    </tbody>
+</table>

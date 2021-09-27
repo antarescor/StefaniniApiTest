@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "stefaniniTestApiRest", "stefaniniTest\stefaniniTestApiRest.csproj", "{045C7D18-0C5F-46CA-88A9-079DFADC5C2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClienteStefanini", "ClienteStefanini\ClienteStefanini.csproj", "{410EEA70-1984-405D-94B6-7AAB42D16DF6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{045C7D18-0C5F-46CA-88A9-079DFADC5C2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{045C7D18-0C5F-46CA-88A9-079DFADC5C2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{045C7D18-0C5F-46CA-88A9-079DFADC5C2F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{410EEA70-1984-405D-94B6-7AAB42D16DF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{410EEA70-1984-405D-94B6-7AAB42D16DF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{410EEA70-1984-405D-94B6-7AAB42D16DF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{410EEA70-1984-405D-94B6-7AAB42D16DF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

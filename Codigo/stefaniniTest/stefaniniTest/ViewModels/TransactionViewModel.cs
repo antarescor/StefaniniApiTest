@@ -9,6 +9,10 @@ namespace stefaniniTest.ViewModels
     {
         public int transaction_type { get; set; }
 
+        public int transaction_id{ get; set; }
+
+        public DateTime transaction_date{ get; set; }
+
         public int bank_id { get; set; }
 
         public int? target_account_id { get; set; }
@@ -18,5 +22,9 @@ namespace stefaniniTest.ViewModels
         public Double amount { get; set; }
 
         public int user_type { get; set; }
+
+        public string transaction_description_detailed { get; set; }
+
+
     }
 }

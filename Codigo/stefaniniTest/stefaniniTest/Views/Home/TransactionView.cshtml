@@ -1,0 +1,143 @@
+﻿@model stefaniniTest.ViewModels.TransactionFormViewModel
+
+@{
+    ViewBag.Title = "TransactionView";
+    var user = ViewBag.user;
+    var bank_list = ViewBag.bank_list;
+    var usertype = user.user_type;
+    var user_id = user.user_id;
+}
+
+<section class="container">
+
+
+    <div class="row">
+        <div class="col-lg-6">
+            <h2>Usuario seleccionado: @user.nombre <span></span> </h2>
+            <h3>Usuario Id: @user.user_id </h3>
+        </div>
+        <br />
+        <div class="col-lg-6 pull-right">
+            <a id="btnCuentas" class="btn btn-primary">Ver cuentas &raquo;</a>
+        </div>
+
+    </div>
+
+    <br />
+    <br />
+
+    <div class="row">
+        <div class="col-md-6">
+
+            <form>
+                <hr />
+                <label for="exampleFormControlSelect1">Tipo de transaccion</label>
+                <br />
+                <br />
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="transactionType" id="efectivo" value="1">
+                    <label class="form-check-label" for="inlineRadio2">Retiro en efectivo</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="transactionType" id="tranferencia" value="2">
+                    <label class="form-check-label" for="inlineRadio1">Transferencia bancaria</label>
+                </div>
+
+                <hr />
+                <br />
+
+                <div class="form-group" id="bankListDiv">
+                    <label id="bankListLabel" for="exampleFormControlSelect1">Listado de Bancos</label>
+                    <select class="form-control" id="bankList">
+                        @foreach (var bank in Model.bank_list)
+                        {
+                            <option value="@bank.user_id">@bank.nombre</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group" id="accountTargetDiv">
+                    <label for="exampleFormControlInput1">Numero cuenta destino</label>
+                    <input type="number" class="form-control" id="accountTarget" placeholder="12345678">
+                    <hr />
+                    <br />
+                </div>
+
+
+
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Listado de cuentas de origen</label>
+                    <select class="form-control" id="accountOriginList">
+                        @foreach (var account in Model.origin_account_list)
+                        {
+                            <option value="@account.account_number">@account.account_all_detail</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">Cantidad</label>
+                    <input type="number" class="form-control" id="amount" placeholder="1200000">
+                </div>
+                <hr />
+
+                <button id="aceptar" type="submit" class="btn btn-primary">Aceptar</button>
+            </form>
+</section>
+    </div>
+
+
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var valRadio;
+
+        $('input[type=radio][name=transactionType]').change(function () {
+            if (this.value == 1) {
+                valRadio = this.value;
+                $("#bankListDiv").hide();
+                $("#accountTargetDiv").hide();
+            } else {
+                $("#bankListDiv").show();
+                $("#accountTargetDiv").show();
+            }
+        });
+
+        $("#aceptar").click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "https://localhost:44331/api/setTransaction",
+                data: {
+                    transaction_type: $("input[type='radio'][name='transactionType']:checked").val(),
+                    bank_id: $("#bankList").val(),
+                    target_account_id: $("#accountTarget").val(),
+                    origin_account_id: $("#accountOriginList").val(),
+                    amount: $("#amount").val(),
+                    user_type: @usertype
+                },
+                success: function (result) {
+                    console.log("asasas" + result.result)
+                    alert('ok');
+                },
+                error: function (result) {
+                    alert('error' + result.myCustomMessage);
+                }
+            });
+        });
+
+
+        $("#btnCuentas").click(function () {
+        var url = '@Url.Action("userAccounts", "Home", new { user_id = "__id__" })';
+            window.location.href = url.replace('__id__', @user_id);
+    });
+
+
+    });
+</script>
+
+
+
+
+

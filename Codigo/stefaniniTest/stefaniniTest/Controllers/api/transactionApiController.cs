@@ -35,6 +35,36 @@ namespace stefaniniTest.Controllers.api
         }
 
         [HttpGet]
+        [Route("api/GetAllUser/")]
+        public IQueryable<UsersViewModel> GetUsers()
+        {
+            IQueryable<UsersViewModel> listOfUsers = null;
+
+            listOfUsers = db.users.Select(r => new UsersViewModel
+            {
+                nombre = r.user_name,
+                user_id = r.user_id
+            });
+
+            return listOfUsers;
+        }
+
+        [HttpGet]
+        [Route("api/GetUser/")]
+        public IQueryable<UsersViewModel> GetUser(int user_id)
+        {
+            IQueryable<UsersViewModel> user = null;
+
+            user = db.users.Where(x => x.user_id == user_id).Select(r => new UsersViewModel
+            {
+                nombre = r.user_name,
+                user_id = r.user_id
+            });
+
+            return user;
+        }
+
+        [HttpGet]
         [Route("api/GetAllAccountsByUser/")]
         public IQueryable<AccountsViewModel> GetAllAccountsByUser(int user_id)
         {
@@ -49,27 +79,59 @@ namespace stefaniniTest.Controllers.api
                 select new AccountsViewModel()
                 {
                     account_number = ac.account_number,
-                    account_all_detail = "Cuenta # " + ac.account_number + " - (" + ac.account_description + "), " + rs.user_name
+                    account_all_detail = "Cuenta # " + ac.account_number + " - (" + ac.account_description + "), " + rs.user_name,
+                    blance = ac.account_balance
                 };
 
             return listOfUserAccounts;
+        }
+
+        [HttpGet]
+        [Route("api/GetHistoricalByAccount/")]
+        public IQueryable<TransactionViewModel> GetHistoricalByAccount(int account_id)
+        {
+            var historicalList = db.transactions.Where(x => x.transaction_origin_account_id == account_id || x.transaction_target_account_id == account_id)
+                .Select(r => new TransactionViewModel
+                {
+                    transaction_id = r.transaction_id,
+                    transaction_date = r.transaction_date,
+                    transaction_type = r.transaction_type,
+                    target_account_id = r.transaction_target_account_id,
+                    origin_account_id = r.transaction_origin_account_id,
+                    transaction_description_detailed = r.transactions_description
+                });
+         
+
+            return historicalList;
         }
 
         [HttpPost]
         [Route("api/setTransaction/")]
         public IHttpActionResult setTransaction(TransactionViewModel transaccion)
         {
+            bool result = true;
+
             switch (transaccion.transaction_type)
             {
                 case 1://Retiro en efectivo
-                    cashWithdrawal(transaccion);
+                    result = cashWithdrawal(transaccion);
                     break;
                 case 2:// Transferencia
-                    bankTransfer(transaccion);
+                    result = bankTransfer(transaccion);
                     break;
             }
 
-            return Ok("exito");
+
+            if (result)
+            {
+                var myCustomMessage = "Transaccion exitosa";
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.OK, myCustomMessage));
+            }
+            else
+            {
+                var myCustomMessage = "La transaccion no pudo realizarse";
+                return ResponseMessage(Request.CreateResponse(HttpStatusCode.NotFound, myCustomMessage));
+            }
         }
 
         private bool cashWithdrawal(TransactionViewModel transaction)
@@ -82,9 +144,8 @@ namespace stefaniniTest.Controllers.api
                 GMF = (transaction.amount * 4) / 1000;
             else
                 GMF = -1;
-            bool result = cashWithdrawalBD(transaction, GMF);
 
-            return result;
+            return cashWithdrawalBD(transaction, GMF); ;
         }
 
         private bool cashWithdrawalBD(TransactionViewModel transaction, Double GMF)
@@ -95,6 +156,7 @@ namespace stefaniniTest.Controllers.api
 
             using (DbContextTransaction dbTransaction = db.Database.BeginTransaction())
             {
+
                 Double amountTotal = (GMF == -1 ? 0 : GMF) + transaction.amount;
                 bool yesOrNot = fundsAvailable(transaction.origin_account_id, amountTotal);
 
@@ -112,7 +174,7 @@ namespace stefaniniTest.Controllers.api
                     transactionRegister.transaction_type = transaction.transaction_type;
                     transactionRegister.transaction_origin_account_id = transaction.origin_account_id;
                     transactionRegister.transaction_target_account_id = null;
-                    transactionRegister.transactions_description = db.transactions_type.Find(transaction.transaction_type).transaction_description + " ("+ transaction.amount + ")";
+                    transactionRegister.transactions_description = db.transactions_type.Find(transaction.transaction_type).transaction_description + " (" + transaction.amount + ")";
                     db.transactions.Add(transactionRegister);
 
                     //cobar GMF
@@ -128,14 +190,14 @@ namespace stefaniniTest.Controllers.api
                         transactionGMF.transaction_type = 3;
                         transactionGMF.transaction_origin_account_id = transaction.origin_account_id;
                         transactionGMF.transaction_target_account_id = accountBank.account_number;
-                        transactionGMF.transactions_description = db.transactions_type.Find(3).transaction_description + " ("+ GMF + ")";
+                        transactionGMF.transactions_description = db.transactions_type.Find(3).transaction_description + " (" + GMF + ")";
                         db.transactions.Add(transactionGMF);
                     }
 
                     db.SaveChanges();
                     result = true;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     result = false;
                     //throw;
@@ -160,13 +222,20 @@ namespace stefaniniTest.Controllers.api
             else
                 GMF = -1;
 
-            bankTransferBD(transaction, GMF);
+            return bankTransferBD(transaction, GMF);
 
-            return true;
         }
 
         private bool bankTransferBD(TransactionViewModel transaction, Double GMF)
         {
+
+            accounts accountAux = db.accounts.Find(transaction.target_account_id);
+            if (accountAux == null)
+                return false;
+
+            if (accountAux.account_bank_id != transaction.bank_id)
+                return false;
+
             bool result;
             transactions transactionRegister = new transactions();
             transactions transactionGMF = new transactions();
